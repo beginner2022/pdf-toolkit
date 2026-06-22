@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Photo Resize to 20KB, 50KB, 100KB Online | ConvertoPDF</title>
+
+<meta name="description" content="Resize photo to exact KB size like 20KB, 50KB, 100KB for NEET, JEE, SSC, Railway and all government forms. Free online photo resizer tool.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+font-family:Arial;
+background:#f4f6f9;
+margin:0;
+padding:0;
+}
+
+header{
+background:#1e293b;
+color:white;
+padding:20px;
+text-align:center;
+}
+
+.container{
+max-width:800px;
+margin:30px auto;
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+input,select,button{
+width:100%;
+padding:12px;
+margin:10px 0;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+button{
+background:#2563eb;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+canvas{
+display:none;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h1>Photo Resize to Exact KB</h1>
+<p>Resize image to 20KB, 50KB, 100KB for exams & government forms</p>
+</header>
+
+<div class="container">
+
+<input type="file" id="fileInput" accept="image/*">
+
+<select id="targetSize">
+<option value="20">20 KB</option>
+<option value="50">50 KB</option>
+<option value="100">100 KB</option>
+<option value="200">200 KB</option>
+</select>
+
+<button onclick="resizeImage()">Resize Image</button>
+
+<p id="status"></p>
+
+<a id="downloadLink" style="display:none;">Download Image</a>
+
+<canvas id="canvas"></canvas>
+
+</div>
+
+<script>
+function resizeImage(){
+
+const fileInput = document.getElementById("fileInput");
+const targetSize = parseInt(document.getElementById("targetSize").value);
+const status = document.getElementById("status");
+const downloadLink = document.getElementById("downloadLink");
+
+if(!fileInput.files[0]){
+alert("Please upload an image");
+return;
+}
+
+const file = fileInput.files[0];
+const reader = new FileReader();
+
+reader.onload = function(e){
+
+const img = new Image();
+
+img.onload = function(){
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = img.width;
+canvas.height = img.height;
+
+ctx.drawImage(img,0,0);
+
+let quality = 0.9;
+let output;
+
+function compress(){
+
+output = canvas.toDataURL("image/jpeg", quality);
+
+let sizeKB = Math.round((output.length * 3) / 4 / 1024);
+
+if(sizeKB > targetSize && quality > 0.1){
+quality -= 0.05;
+compress();
+}
+else{
+downloadLink.href = output;
+downloadLink.download = "resized.jpg";
+downloadLink.style.display = "block";
+downloadLink.innerText = "Download Image (" + sizeKB + " KB)";
+status.innerText = "Done! Final size: " + sizeKB + " KB";
+}
+}
+
+compress();
+};
+
+img.src = e.target.result;
+};
+
+reader.readAsDataURL(file);
+}
+</script>
+
+</body>
+</html>
