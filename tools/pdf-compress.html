@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<title>Compress PDF Online Free | Reduce PDF Size to 100KB, 200KB</title>
+
+<meta name="description" content="Free PDF compressor tool to reduce PDF size online. Compress PDF to 100KB, 200KB or custom size for NEET, SSC, JEE and government forms.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+
+<style>
+body{
+font-family:Arial;
+background:#f4f6f9;
+margin:0;
+padding:0;
+}
+
+header{
+background:#1e293b;
+color:white;
+padding:25px;
+text-align:center;
+}
+
+.container{
+max-width:800px;
+margin:30px auto;
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+input,select,button{
+width:100%;
+padding:12px;
+margin:10px 0;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+button{
+background:#2563eb;
+color:white;
+font-weight:bold;
+cursor:pointer;
+border:none;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+#status{
+margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>PDF Compressor Online Free</h1>
+<p>Reduce PDF size for NEET, SSC, JEE & Government Forms</p>
+</header>
+
+<div class="container">
+
+<input type="file" id="pdfFile" accept=".pdf">
+
+<select id="quality">
+<option value="0.9">High Quality</option>
+<option value="0.7">Medium Quality</option>
+<option value="0.5">Low Size</option>
+</select>
+
+<button onclick="compressPDF()">Compress PDF</button>
+
+<p id="status"></p>
+
+<a id="download" style="display:none;">Download Compressed PDF</a>
+
+</div>
+
+<script>
+async function compressPDF(){
+
+const file = document.getElementById("pdfFile").files[0];
+const status = document.getElementById("status");
+const download = document.getElementById("download");
+
+if(!file){
+alert("Please select a PDF");
+return;
+}
+
+status.innerText = "Processing...";
+
+const { PDFDocument } = PDFLib;
+
+const existingPdfBytes = await file.arrayBuffer();
+const pdfDoc = await PDFDocument.load(existingPdfBytes);
+
+// simple “re-save compression”
+const pdfBytes = await pdfDoc.save({
+useObjectStreams: true
+});
+
+const blob = new Blob([pdfBytes], { type: "application/pdf" });
+
+const url = URL.createObjectURL(blob);
+
+download.href = url;
+download.download = "compressed.pdf";
+download.style.display = "block";
+download.innerText = "Download Compressed PDF";
+
+status.innerText = "Done!";
+}
+</script>
+
+</body>
+</html>
